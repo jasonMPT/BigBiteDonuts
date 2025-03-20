@@ -78,7 +78,7 @@ app.get("/", (c) => {
 		<h2>Orders</h2>
 		<ul class="ml-4">
 			{orders.map((o) => (
-				<li key={o.id}>Order ID: {o.id} - Total: ${o.total}</li>
+				<li key={o.id}>Order ID: {o.id} - Total: ${o.total} - {o.paid ? "Paid" : ""}</li>
 			))}
 		</ul>
 	</Layout>);
