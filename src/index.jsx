@@ -31,6 +31,7 @@ db.exec(`
 `);
 const app = new Hono();
 
+
 const Layout = (props) => {
 	return (
 		<html>
@@ -42,6 +43,12 @@ const Layout = (props) => {
 	);
 };
 
+const Payment = (props) => {
+	const id = props.id;
+	return (
+		<a href={'https://payy.us.test/pay/d6gmqBGw4ERv/'+id}>Pay</a>
+	);
+}
 
 app.get("/", (c) => {
 	const products = db.query("SELECT * FROM products").all();
@@ -78,7 +85,7 @@ app.get("/", (c) => {
 		<h2>Orders</h2>
 		<ul class="ml-4">
 			{orders.map((o) => (
-				<li key={o.id}>Order ID: {o.id} - Total: ${o.total} - {o.paid ? "Paid" : ""}</li>
+				<li key={o.id}>Order ID: {o.id} - Total: ${o.total} - {o.paid ? "Paid" : <Payment id={o.id} />}</li>
 			))}
 		</ul>
 	</Layout>);
