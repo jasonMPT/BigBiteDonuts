@@ -1,7 +1,7 @@
 {
   "name": "BigBiteDonuts",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.jsx"
   },
   "dependencies": {
     "bun": "^1.2.5",
