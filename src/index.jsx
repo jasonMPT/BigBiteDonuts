@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { Database } from "bun:sqlite";
+import { bearerAuth } from 'hono/bearer-auth'
 
 // Initialize the SQLite database
 const db = new Database("mydatabase.sqlite");
@@ -122,18 +123,19 @@ app.get("/order/:orderId", (c) => {
 	const orderId = c.req.param("orderId");
 	const order = db.query(`SELECT * FROM orders WHERE id = ${orderId}`).get();
 	const orderItems = db.query(`SELECT * FROM order_items WHERE order_id = ${orderId}`).all();
+	const product = db.query(`SELECT * FROM products WHERE id = ${orderItems[0].product_id}`).get();
+	orderItems[0].price = product.price;
+	orderItems[0].name = product.name;
+
 	return c.json({ order, orderItems });
 }
 );
 
-app.put("/order/:orderId", (c) => {
-	const auth = c.req.headers.get("Authorization");
-	if (auth !== "123") {
-		return c.json({ message: "Unauthorized" });
-	}
-	
-	const orderId = c.req.param("orderId");
-	db.exec(`UPDATE orders SET paid=1 WHERE id = ${orderId}`);
-	return c.json({ message: `Order ${orderId} updated` });
+const token = "123";
+app.put("/order/update",  bearerAuth({ token }), async (c) => {
+	const { id } = await c.req.json();
+	console.log("Updating order with id: ", id);
+	db.exec(`UPDATE orders SET paid=1 WHERE id = ${id}`);
+	return c.json({ message: `Order ${id} updated` });
 });
 export default app;
